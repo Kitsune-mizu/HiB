@@ -1,53 +1,94 @@
+// components/account/cancel-order-button.tsx
 "use client"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
+import { Loader2, XCircle } from "lucide-react"
 
 interface CancelOrderButtonProps {
   orderId: string
 }
 
 export function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
-  const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const supabase = createClient()
+  const [isLoading, setIsLoading] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleCancel = async () => {
-    const confirmCancel = confirm("Are you sure you want to cancel this order?")
-    if (!confirmCancel) return
-
-    setLoading(true)
+    setIsLoading(true)
 
     try {
+      const supabase = createClient()
+      
       const { error } = await supabase
         .from("orders")
         .update({ status: "cancelled" })
         .eq("id", orderId)
 
-      if (error) throw error
+      if (error) {
+        throw error
+      }
 
       toast.success("Order cancelled successfully")
-
+      setIsOpen(false)
       router.refresh()
     } catch (error) {
-      console.error(error)
-      toast.error("Failed to cancel order")
+      console.error("Error cancelling order:", error)
+      toast.error("Failed to cancel order. Please try again.")
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
   return (
-    <Button
-      variant="destructive"
-      className="w-full"
-      onClick={handleCancel}
-      disabled={loading}
-    >
-      {loading ? "Cancelling..." : "Cancel Order"}
-    </Button>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+      <AlertDialogTrigger asChild>
+        <Button variant="destructive" className="w-full">
+          <XCircle className="h-4 w-4 mr-2" />
+          Cancel Order
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Cancel Order</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to cancel this order? This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isLoading}>
+            Keep Order
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleCancel}
+            disabled={isLoading}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Cancelling...
+              </>
+            ) : (
+              "Yes, Cancel Order"
+            )}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }
