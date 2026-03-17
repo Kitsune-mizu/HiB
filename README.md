@@ -63,7 +63,7 @@ A **modern, production-ready e-commerce platform** for outdoor adventure gear. B
 
 ## 📁 Project Structure
 
-```
+``` 
 app/
 ├── admin/                    # Admin dashboard
 │   ├── layout.tsx           # Admin layout with sidebar
@@ -378,5 +378,6 @@ For issues or questions:
 **Built with ❤️ for modern e-commerce**
 
 光る冒険 - Hikaru Bouken (Shining Adventure)
-#   H i B  
+#   H i B 
+ 
  # HiB
