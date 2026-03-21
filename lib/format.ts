@@ -6,20 +6,22 @@ export function formatPrice(price: number): string {
 }
 
 export function formatDate(date: string | Date): string {
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat("id-ID", { // ✅ Ganti ke id-ID untuk Indonesia
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "Asia/Jakarta", // ✅ Timezone Indonesia
   }).format(new Date(date))
 }
 
 export function formatDateTime(date: string | Date): string {
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat("id-ID", { // ✅ Ganti ke id-ID
     year: "numeric",
     month: "short",
     day: "numeric",
     hour: "numeric",
     minute: "2-digit",
+    timeZone: "Asia/Jakarta", // ✅ Timezone Indonesia
   }).format(new Date(date))
 }
 

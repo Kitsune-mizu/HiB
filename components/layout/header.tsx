@@ -18,6 +18,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { HikaruLogoMinimal } from "@/components/ui/hikaru-logo"
+import { createClient } from "@/lib/supabase/client"
 // SheetTitle & SheetDescription must be static (Radix a11y requirement)
 import { SheetTitle, SheetDescription } from "@/components/ui/sheet"
 
@@ -113,6 +114,37 @@ export function Header({ user, cartCount = 0 }: HeaderProps) {
 
     window.addEventListener("profile:updated", handleProfileUpdated)
     return () => window.removeEventListener("profile:updated", handleProfileUpdated)
+  }, [])
+
+  // ─── Supabase auth listener ─────────────────────────────────────────────────
+  useEffect(() => {
+    // Only run on client
+    if (typeof window === 'undefined') return
+
+    const supabase = createClient()
+    
+    // Subscribe to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        // Handle sign in / session refresh
+        if (session?.user) {
+          setCurrentUser({
+            id: session.user.id,
+            name: session.user.user_metadata?.name ?? null,
+            role: session.user.user_metadata?.role ?? "customer",
+          })
+        } 
+        // Handle sign out
+        else if (event === 'SIGNED_OUT') {
+          setCurrentUser(null)
+        }
+      }
+    )
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
   // ─── Derived display values ─────────────────────────────────────────────────
@@ -319,10 +351,16 @@ export function Header({ user, cartCount = 0 }: HeaderProps) {
                   Categories
                   <ChevronDown className="h-4 w-4" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-white">
+                <DropdownMenuContent className="w-64 bg-white">
                   {categories.map((cat) => (
                     <DropdownMenuItem key={cat.name} asChild>
-                      <Link href={cat.href}>{cat.name}</Link>
+                      <Link 
+                        href={cat.href}
+                        className="flex items-center justify-between w-full"
+                      >
+                        <span>{cat.name}</span>
+                        <span className="text-xs text-neutral-400 ml-3">{cat.japanese}</span>
+                      </Link>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>

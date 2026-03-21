@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { ProfileForm } from "@/components/account/profile-form"
-import { redirect } from "next/dist/client/components/navigation"
+import { redirect } from "next/navigation"
 
 export const metadata = {
   title: "My Profile | Hikaru Bouken",
@@ -13,18 +13,19 @@ export default async function AccountPage() {
   const { data: { user: authUser } } = await supabase.auth.getUser()
   
   if (!authUser) {
-  redirect("/auth/login")
+    redirect("/auth/login")
   }
 
   const { data: profile } = await supabase
     .from("users")
     .select("*")
-    .eq("id", authUser!.id)
+    .eq("id", authUser.id)
     .single()
 
   const user = {
-  ...profile,
-  email: authUser.email,
+    ...profile,
+    email: authUser.email,
+    last_sign_in_at: authUser.last_sign_in_at, // ✅ Tambahkan ini
   }
 
   return (

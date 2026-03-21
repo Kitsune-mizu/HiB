@@ -6,7 +6,7 @@ export async function createClient() {
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!, 
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, // ✅ GANTI dari SERVICE_ROLE_KEY
     {
       cookies: {
         getAll() {
@@ -15,11 +15,13 @@ export async function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options),
+              cookieStore.set(name, value, options)
             )
-          } catch {}
+          } catch {
+            // Cookie setting may fail during RSC render
+          }
         },
       },
-    },
+    }
   )
 }
