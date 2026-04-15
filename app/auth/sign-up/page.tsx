@@ -33,23 +33,43 @@ export default function SignUpPage() {
 
     setIsLoading(true)
 
-    const supabase = createClient()
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-        data: {
-          name,
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            name,
+          },
         },
-      },
-    })
+      })
 
-    if (error) {
-      toast.error(error.message)
+      if (error) {
+        toast.error(error.message)
+        setIsLoading(false)
+        return
+      }
+
+      // Send verification email
+      const verifyRes = await fetch('/api/auth/send-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      })
+
+      if (!verifyRes.ok) {
+        toast.error("Failed to send verification code")
+        setIsLoading(false)
+        return
+      }
+
+      // Redirect to verify email page
+      router.push(`/auth/verify-email?email=${encodeURIComponent(email)}`)
+    } catch (err) {
+      toast.error("An error occurred. Please try again.")
       setIsLoading(false)
-    } else {
-      router.push("/auth/sign-up-success")
     }
   }
 
@@ -132,17 +152,17 @@ export default function SignUpPage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="font-heading text-2xl font-bold text-black">Create Account</h2>
-            <p className="text-neutral-500 mt-1">Join us and start your adventure</p>
+            <h2 className="font-heading text-2xl font-bold text-black">Buat Akun</h2>
+            <p className="text-neutral-500 mt-1">Bergabunglah dan mulai petualangan Anda</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-sm font-medium text-black">Full Name</Label>
+              <Label htmlFor="name" className="text-sm font-medium text-black">Nama Lengkap</Label>
               <Input
                 id="name"
                 type="text"
-                placeholder="Your name"
+                placeholder="Nama Anda"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -152,11 +172,11 @@ export default function SignUpPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-black">Email Address</Label>
+              <Label htmlFor="email" className="text-sm font-medium text-black">Alamat Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="name@example.com"
+                placeholder="nama@contoh.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -170,22 +190,22 @@ export default function SignUpPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="Create a password"
+                placeholder="Buat password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
                 className="h-11 bg-neutral-50 border-neutral-200 focus:bg-white"
               />
-              <p className="text-xs text-neutral-400">Must be at least 6 characters</p>
+              <p className="text-xs text-neutral-400">Minimal 6 karakter</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-sm font-medium text-black">Confirm Password</Label>
+              <Label htmlFor="confirmPassword" className="text-sm font-medium text-black">Konfirmasi Password</Label>
               <Input
                 id="confirmPassword"
                 type="password"
-                placeholder="Confirm your password"
+                placeholder="Konfirmasi password Anda"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
@@ -194,29 +214,29 @@ export default function SignUpPage() {
               />
             </div>
 
-            <Button type="submit" className="w-full h-11 bg-black text-white hover:bg-neutral-800" disabled={isLoading}>
+            <Button type="submit" className="w-full h-11 bg-[#E10600] text-white hover:bg-red-700" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating account...
+                  Membuat akun...
                 </>
               ) : (
-                "Create Account"
+                "Buat Akun"
               )}
             </Button>
           </form>
 
           <div className="mt-8 text-center">
             <p className="text-sm text-neutral-500">
-              Already have an account?{" "}
+              Sudah punya akun?{" "}
               <Link href="/auth/login" className="text-[#E10600] font-medium hover:underline">
-                Sign in
+                Masuk di sini
               </Link>
             </p>
           </div>
 
           <p className="mt-6 text-center text-xs text-neutral-400">
-            By creating an account, you agree to our Terms of Service and Privacy Policy.
+            Dengan membuat akun, Anda setuju dengan Syarat Layanan dan Kebijakan Privasi kami.
           </p>
         </div>
       </div>

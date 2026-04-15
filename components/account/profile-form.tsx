@@ -68,72 +68,79 @@ export function ProfileForm({ user }: ProfileFormProps) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Profile Information</CardTitle>
+    <Card className="border-gray-200">
+      <CardHeader className="border-b border-gray-200">
+        <CardTitle className="text-black">Informasi Profil</CardTitle>
         <CardDescription>
-          Update your personal information and contact details
+          Perbarui informasi pribadi dan detail kontak Anda
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <CardContent className="pt-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-sm font-medium text-black">Email</Label>
             <Input
               id="email"
               type="email"
               value={user?.email || ""}
               disabled
-              className="bg-muted"
+              className="bg-gray-100 text-gray-600 border-gray-200"
             />
-            <p className="text-xs text-muted-foreground">
-              Email cannot be changed
+            <p className="text-xs text-gray-500">
+              Email tidak dapat diubah
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
+            <Label htmlFor="name" className="text-sm font-medium text-black">Nama Lengkap</Label>
             <Input
               id="name"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Enter your full name"
+              placeholder="Masukkan nama lengkap Anda"
+              className="border-gray-200 focus:border-red-600"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="phone" className="text-sm font-medium text-black">Nomor Telepon</Label>
             <Input
               id="phone"
               name="phone"
               type="tel"
               value={formData.phone}
               onChange={handleChange}
-              placeholder="Enter your phone number"
+              placeholder="Masukkan nomor telepon Anda"
+              className="border-gray-200 focus:border-red-600"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address" className="text-sm font-medium text-black">Alamat</Label>
             <Textarea
               id="address"
               name="address"
               value={formData.address}
               onChange={handleChange}
-              placeholder="Enter your address"
+              placeholder="Masukkan alamat Anda"
               rows={3}
+              className="border-gray-200 focus:border-red-600"
             />
           </div>
 
-          <Button type="submit" disabled={isLoading}>
+          <Button 
+            type="submit" 
+            disabled={isLoading}
+            className="w-full bg-[#E10600] hover:bg-red-700 text-white font-semibold py-2"
+          >
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
+                Menyimpan...
               </>
             ) : (
-              "Save Changes"
+              "Simpan Perubahan"
             )}
           </Button>
         </form>

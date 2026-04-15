@@ -67,12 +67,12 @@ function LoginForm() {
 
         <div className="space-y-6 relative">
           <h1 className="font-heading text-4xl font-bold leading-tight text-black">
-            Welcome Back
+            Selamat Datang Kembali
             <br />
             <span className="text-neutral-400">おかえりなさい</span>
           </h1>
           <p className="text-neutral-600 max-w-md">
-            Sign in to access your account, track orders, and continue your adventure with us.
+            Masuk untuk mengakses akun Anda, melacak pesanan, dan melanjutkan petualangan Anda bersama kami.
           </p>
         </div>
 
@@ -103,17 +103,17 @@ function LoginForm() {
           </div>
 
           <div className="mb-8">
-            <h2 className="font-heading text-2xl font-bold text-black">Sign In</h2>
-            <p className="text-neutral-500 mt-1">Enter your credentials to continue</p>
+            <h2 className="font-heading text-2xl font-bold text-black">Masuk</h2>
+            <p className="text-neutral-500 mt-1">Masukkan kredensial Anda untuk melanjutkan</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-black">Email Address</Label>
+              <Label htmlFor="email" className="text-sm font-medium text-black">Alamat Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="name@example.com"
+                placeholder="nama@contoh.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -129,13 +129,13 @@ function LoginForm() {
                   href="/auth/forgot-password"
                   className="text-xs text-neutral-500 hover:text-[#E10600] transition-colors"
                 >
-                  Forgot password?
+                  Lupa password?
                 </Link>
               </div>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Masukkan password Anda"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -144,23 +144,23 @@ function LoginForm() {
               />
             </div>
 
-            <Button type="submit" className="w-full h-11 bg-black text-white hover:bg-neutral-800" disabled={isLoading}>
+            <Button type="submit" className="w-full h-11 bg-[#E10600] text-white hover:bg-red-700" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
+                  Sedang masuk...
                 </>
               ) : (
-                "Sign In"
+                "Masuk"
               )}
             </Button>
           </form>
 
           <div className="mt-8 text-center">
             <p className="text-sm text-neutral-500">
-              Don&apos;t have an account?{" "}
+              Belum punya akun?{" "}
               <Link href="/auth/sign-up" className="text-[#E10600] font-medium hover:underline">
-                Create account
+                Buat akun sekarang
               </Link>
             </p>
           </div>
