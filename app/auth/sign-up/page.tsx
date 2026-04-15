@@ -10,6 +10,19 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 
+async function sendOTP(email: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const res = await fetch("/api/auth/otp/resend", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    })
+    return await res.json()
+  } catch {
+    return { success: false, error: "Failed to send verification code" }
+  }
+}
+
 export default function SignUpPage() {
   const router = useRouter()
   const [name, setName] = useState("")
@@ -49,7 +62,15 @@ export default function SignUpPage() {
       toast.error(error.message)
       setIsLoading(false)
     } else {
-      router.push("/auth/sign-up-success")
+      // Send OTP for email verification
+      const otpResult = await sendOTP(email)
+      if (!otpResult.success) {
+        console.warn("Failed to send OTP:", otpResult.error)
+        // Still redirect to verify page - user can resend from there
+      }
+      
+      // Redirect to verification page
+      router.push(`/auth/verify?email=${encodeURIComponent(email)}`)
     }
   }
 

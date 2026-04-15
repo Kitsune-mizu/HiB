@@ -14,6 +14,7 @@ function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get("redirect") || "/"
+  const verified = searchParams.get("verified") === "true"
   
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -101,6 +102,20 @@ function LoginForm() {
               </div>
             </Link>
           </div>
+
+          {verified && (
+            <div className="mb-6 bg-green-50 border border-green-200 p-4 flex items-center gap-3">
+              <div className="w-8 h-8 bg-green-500 flex items-center justify-center shrink-0">
+                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-green-800">Email Verified Successfully</p>
+                <p className="text-xs text-green-600">You can now sign in to your account</p>
+              </div>
+            </div>
+          )}
 
           <div className="mb-8">
             <h2 className="font-heading text-2xl font-bold text-black">Sign In</h2>

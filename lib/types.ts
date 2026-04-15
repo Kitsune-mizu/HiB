@@ -83,3 +83,14 @@ export interface Notification {
   type: string
   created_at: string
 }
+
+export interface OTPCode {
+  id: string
+  email: string
+  code_hash: string
+  created_at: string
+  expires_at: string
+  verified_at: string | null
+  attempts: number
+  last_attempt_at: string | null
+}

@@ -39,6 +39,7 @@ export async function updateSession(request: NextRequest) {
   // Define path categories
   const isAdminPath = pathname.startsWith('/admin')
   const isAuthPath = pathname.startsWith('/auth')
+  const isVerifyPath = pathname === '/auth/verify'
   const isProtectedCustomerPath = 
     pathname.startsWith('/account') ||
     pathname.startsWith('/cart') ||
@@ -78,9 +79,9 @@ export async function updateSession(request: NextRequest) {
   }
 
   // ────────────────────────────────────────────────────────────────────────────
-  // 3. Redirect authenticated users away from auth pages
+  // 3. Redirect authenticated users away from auth pages (except verify page)
   // ────────────────────────────────────────────────────────────────────────────
-  if (isAuthPath && user && !pathname.includes('/logout')) {
+  if (isAuthPath && user && !pathname.includes('/logout') && !isVerifyPath) {
     // Check if admin to redirect appropriately
     const { data: userData } = await supabase
       .from('users')
