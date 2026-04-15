@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { CheckoutForm } from "@/components/checkout/checkout-form"
 import { OrderSummary } from "@/components/checkout/order-summary"
+import { isDemoAccount } from "@/lib/demo"
 
 export const metadata = {
   title: "Checkout | Hikaru Bouken",
@@ -58,6 +59,9 @@ export default async function CheckoutPage() {
 
   const shipping = subtotal >= 100 ? 0 : 9.99
   const total = subtotal + shipping
+  
+  // Check if this is a demo account
+  const isDemoMode = isDemoAccount(authUser?.email)
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -83,6 +87,7 @@ export default async function CheckoutPage() {
                 subtotal={subtotal}
                 shipping={shipping}
                 total={total}
+                isDemoMode={isDemoMode}
               />
             </div>
           </div>

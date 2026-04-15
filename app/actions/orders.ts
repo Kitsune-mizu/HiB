@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
+import { isDemoAccount } from "@/lib/demo"
 
 interface OrderItem {
   product_id: string
@@ -25,6 +26,13 @@ export async function createOrderAction(params: CreateOrderParams) {
     return { error: "Not authenticated" }
   }
 
+  // Check if this is a demo account
+  const isDemo = isDemoAccount(user.email)
+  
+  // For demo accounts, auto-confirm the order (status: confirmed)
+  // For real accounts, orders start as pending and need payment confirmation
+  const orderStatus = isDemo ? "confirmed" : "pending"
+
   // Create order
   const { data: order, error: orderError } = await supabase
     .from("orders")
@@ -34,7 +42,7 @@ export async function createOrderAction(params: CreateOrderParams) {
       payment_method: params.paymentMethod,
       shipping_method: params.shippingMethod,
       shipping_address: params.shippingAddress,
-      status: "pending",
+      status: orderStatus,
     })
     .select("id")
     .single()
@@ -77,7 +85,7 @@ export async function createOrderAction(params: CreateOrderParams) {
   // Create notification
   await supabase.from("notifications").insert({
     user_id: user.id,
-    message: `Your order #${order.id.slice(0, 8)} has been placed successfully!`,
+    message: `Your order #${order.id.slice(0, 8)} has been ${isDemo ? "created in test mode" : "placed successfully"}!`,
     link: `/account/orders/${order.id}`,
     type: "order",
   })

@@ -2,8 +2,9 @@ import Image from "next/image"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/components/ui/badge"
 import { formatPrice } from "@/lib/format"
-import { ShieldCheck, Lock } from "lucide-react"
+import { ShieldCheck, Lock, Zap } from "lucide-react"
 
 interface OrderItem {
   id: string
@@ -22,13 +23,22 @@ interface OrderSummaryProps {
   subtotal: number
   shipping: number
   total: number
+  isDemoMode?: boolean
 }
 
-export function OrderSummary({ items, subtotal, shipping, total }: OrderSummaryProps) {
+export function OrderSummary({ items, subtotal, shipping, total, isDemoMode }: OrderSummaryProps) {
   return (
     <Card className="sticky top-24">
       <CardHeader>
-        <CardTitle>Order Summary</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>Order Summary</CardTitle>
+          {isDemoMode && (
+            <Badge className="bg-blue-100 text-blue-700 border-blue-300 flex items-center gap-1 text-xs">
+              <Zap className="h-3 w-3" />
+              Test
+            </Badge>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Items */}

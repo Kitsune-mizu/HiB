@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { formatDate, formatPrice } from "@/lib/format"
-import { ArrowLeft, MapPin, CreditCard, Truck } from "lucide-react"
+import { ArrowLeft, MapPin, CreditCard, Truck, Zap } from "lucide-react"
 import { CancelOrderButton } from "@/components/account/cancel-order-button"
+import { isDemoAccount } from "@/lib/demo"
 
 interface OrderDetailPageProps {
   params: Promise<{ id: string }>
@@ -50,6 +51,9 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
     notFound()
   }
 
+  // Check if this is a demo account order
+  const isDemoOrder = isDemoAccount(authUser?.email)
+
   const currentStepIndex = statusSteps.indexOf(order.status)
   const canCancel = ["pending", "confirmed"].includes(order.status)
 
@@ -70,12 +74,20 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
           </h1>
           <p className="text-muted-foreground">{formatDate(order.created_at)}</p>
         </div>
-        <Badge
-          variant="outline"
-          className={`text-sm py-1 px-3 ${statusColors[order.status] || ""}`}
-        >
-          {order.status}
-        </Badge>
+        <div className="flex items-center gap-2">
+          {isDemoOrder && (
+            <Badge className="bg-blue-100 text-blue-700 border-blue-300 flex items-center gap-1">
+              <Zap className="h-3 w-3" />
+              Test Order
+            </Badge>
+          )}
+          <Badge
+            variant="outline"
+            className={`text-sm py-1 px-3 ${statusColors[order.status] || ""}`}
+          >
+            {order.status}
+          </Badge>
+        </div>
       </div>
 
       {/* Order Progress */}

@@ -11,8 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
 import { createOrderAction } from "@/app/actions/orders"
-import { CreditCard, Truck, Loader2 } from "lucide-react"
+import { CreditCard, Truck, Loader2, AlertCircle } from "lucide-react"
 import type { User } from "@/lib/types"
+import { isDemoAccount, DEMO_CARDS } from "@/lib/demo"
 
 interface CartItem {
   id: string
@@ -33,6 +34,7 @@ interface CheckoutFormProps {
 export function CheckoutForm({ user, cartItems, total }: CheckoutFormProps) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const isDemoMode = isDemoAccount(user?.email)
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
@@ -89,6 +91,20 @@ export function CheckoutForm({ user, cartItems, total }: CheckoutFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Demo Mode Banner */}
+      {isDemoMode && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold text-blue-900">Test Mode Active</p>
+            <p className="text-sm text-blue-700 mt-1">No real payment will be charged. Use the test card below to complete checkout.</p>
+            <div className="mt-3 bg-white rounded p-3 border border-blue-100 text-sm font-mono">
+              <p className="text-gray-600">Card: <span className="text-black">{DEMO_CARDS.success.number}</span></p>
+              <p className="text-gray-600">Exp: <span className="text-black">{DEMO_CARDS.success.expiry}</span> CVC: <span className="text-black">{DEMO_CARDS.success.cvc}</span></p>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Contact Information */}
       <Card>
         <CardHeader>
@@ -205,7 +221,11 @@ export function CheckoutForm({ user, cartItems, total }: CheckoutFormProps) {
                   <CreditCard className="h-5 w-5 text-muted-foreground" />
                   <div>
                     <p className="font-medium">Credit / Debit Card</p>
-                    <p className="text-sm text-muted-foreground">Pay securely with your card</p>
+                    <p className="text-sm text-muted-foreground">
+                      {isDemoMode 
+                        ? "Use test card from above" 
+                        : "Pay securely with your card"}
+                    </p>
                   </div>
                 </div>
               </Label>

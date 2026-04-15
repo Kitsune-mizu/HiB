@@ -3,7 +3,8 @@ import { createClient } from "@/lib/supabase/server"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { formatDate, formatPrice } from "@/lib/format"
-import { Package, ChevronRight } from "lucide-react"
+import { Package, ChevronRight, Zap } from "lucide-react"
+import { isDemoAccount } from "@/lib/demo"
 
 export const metadata = {
   title: "My Orders | Hikaru Bouken",
@@ -23,6 +24,9 @@ export default async function OrdersPage() {
   const supabase = await createClient()
 
   const { data: { user: authUser } } = await supabase.auth.getUser()
+  
+  // Check if this is a demo account
+  const isDemoMode = isDemoAccount(authUser?.email)
 
   const { data: orders } = await supabase
     .from("orders")
@@ -52,12 +56,20 @@ export default async function OrdersPage() {
                     <CardTitle className="text-base font-medium">
                       Order #{order.id.slice(0, 8)}
                     </CardTitle>
-                    <Badge
-                      variant="outline"
-                      className={statusColors[order.status] || ""}
-                    >
-                      {order.status}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      {isDemoMode && (
+                        <Badge className="bg-blue-100 text-blue-700 border-blue-300 flex items-center gap-1 text-xs">
+                          <Zap className="h-3 w-3" />
+                          Test
+                        </Badge>
+                      )}
+                      <Badge
+                        variant="outline"
+                        className={statusColors[order.status] || ""}
+                      >
+                        {order.status}
+                      </Badge>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
