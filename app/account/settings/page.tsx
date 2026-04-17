@@ -2,9 +2,9 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ShieldCheck } from "lucide-react"
+import { ChangePasswordForm } from "@/components/account/change-password-form"
 
 export default async function CustomerSettingsPage() {
   const supabase = await createClient()
@@ -48,9 +48,6 @@ export default async function CustomerSettingsPage() {
           <CardTitle>Security</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button variant="outline" className="w-full">
-            Change Password
-          </Button>
           <Alert>
             <ShieldCheck className="h-4 w-4" />
             <AlertDescription>
@@ -59,6 +56,9 @@ export default async function CustomerSettingsPage() {
           </Alert>
         </CardContent>
       </Card>
+
+      {/* Change Password Form */}
+      <ChangePasswordForm />
 
       {/* Login History */}
       <Card>

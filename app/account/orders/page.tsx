@@ -54,7 +54,7 @@ export default async function OrdersPage() {
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-base font-medium">
-                      Order #{order.id.slice(0, 8)}
+                      Order #{order.id}
                     </CardTitle>
                     <div className="flex items-center gap-2">
                       {isDemoMode && (

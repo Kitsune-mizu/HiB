@@ -21,12 +21,16 @@ import { Loader2, XCircle } from "lucide-react"
 
 interface CancelOrderButtonProps {
   orderId: string
+  orderStatus: string
 }
 
-export function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
+export function CancelOrderButton({ orderId, orderStatus }: CancelOrderButtonProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  
+  // Only allow cancellation if order is in "pending" or "confirmed" status
+  const canCancel = ["pending", "confirmed"].includes(orderStatus)
 
   const handleCancel = async () => {
     setIsLoading(true)
@@ -57,7 +61,12 @@ export function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" className="w-full">
+        <Button 
+          variant="destructive" 
+          className="w-full"
+          disabled={!canCancel}
+          title={!canCancel ? `Cannot cancel ${orderStatus} orders` : ""}
+        >
           <XCircle className="h-4 w-4 mr-2" />
           Cancel Order
         </Button>

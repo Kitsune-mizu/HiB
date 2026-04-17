@@ -113,7 +113,7 @@ export default async function AdminDashboard() {
               recentOrders.map((order: any) => (
                 <div key={order.id} className="flex items-center justify-between border-b pb-3 last:border-0">
                   <div>
-                    <p className="font-medium">Order #{order.id.slice(0, 8)}</p>
+                    <p className="font-medium">Order #{order.id}</p>
                     <p className="text-sm text-muted-foreground">{order.users?.name || "Guest"}</p>
                   </div>
                   <div className="text-right">

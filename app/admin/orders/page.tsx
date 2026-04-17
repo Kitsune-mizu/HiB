@@ -72,7 +72,7 @@ export default async function AdminOrdersPage() {
                   orders.map((order: any) => (
                     <TableRow key={order.id}>
                       <TableCell className="font-mono text-sm">
-                        #{order.id.slice(0, 8)}
+                        #{order.id}
                       </TableCell>
                       <TableCell>
                         <div>

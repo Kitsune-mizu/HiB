@@ -17,8 +17,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Plus, MoreVertical, Edit, Trash2, Eye } from "lucide-react"
+import { Plus, MoreVertical, Edit, Eye } from "lucide-react"
 import { formatPrice } from "@/lib/format"
+import { DeleteProductButton } from "@/components/admin/delete-product-button"
 
 export default async function AdminProductsPage() {
   const supabase = await createClient()
@@ -107,9 +108,11 @@ export default async function AdminProductsPage() {
                                 Edit
                               </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive flex gap-2">
-                              <Trash2 className="h-4 w-4" />
-                              Delete
+                            <DropdownMenuItem asChild>
+                              <DeleteProductButton
+                                productId={product.id}
+                                productName={product.name}
+                              />
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

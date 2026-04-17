@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import { isDemoAccount } from "@/lib/demo"
+import { generateOrderId } from "@/lib/order-id"
 
 interface OrderItem {
   product_id: string
@@ -32,11 +33,15 @@ export async function createOrderAction(params: CreateOrderParams) {
   // For demo accounts, auto-confirm the order (status: confirmed)
   // For real accounts, orders start as pending and need payment confirmation
   const orderStatus = isDemo ? "confirmed" : "pending"
+  
+  // Generate alphanumeric order ID
+  const orderId = generateOrderId()
 
   // Create order
   const { data: order, error: orderError } = await supabase
     .from("orders")
     .insert({
+      id: orderId,
       user_id: user.id,
       total_price: params.totalPrice,
       payment_method: params.paymentMethod,
@@ -85,13 +90,13 @@ export async function createOrderAction(params: CreateOrderParams) {
   // Create notification
   await supabase.from("notifications").insert({
     user_id: user.id,
-    message: `Your order #${order.id.slice(0, 8)} has been ${isDemo ? "created in test mode" : "placed successfully"}!`,
-    link: `/account/orders/${order.id}`,
+    message: `Your order #${orderId} has been ${isDemo ? "created in test mode" : "placed successfully"}!`,
+    link: `/account/orders/${orderId}`,
     type: "order",
   })
 
   revalidatePath("/", "layout")
-  return { success: true, orderId: order.id }
+  return { success: true, orderId: orderId }
 }
 
 export async function cancelOrderAction(orderId: string) {

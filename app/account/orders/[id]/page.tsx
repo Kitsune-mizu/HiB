@@ -70,7 +70,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="font-heading text-2xl font-bold">
-            Order #{order.id.slice(0, 8)}
+            Order #{order.id}
           </h1>
           <p className="text-muted-foreground">{formatDate(order.created_at)}</p>
         </div>
@@ -241,7 +241,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
 
           {/* Actions */}
           {canCancel && (
-            <CancelOrderButton orderId={order.id} />
+            <CancelOrderButton orderId={order.id} orderStatus={order.status} />
           )}
         </div>
       </div>
